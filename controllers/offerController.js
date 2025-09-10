@@ -13,11 +13,22 @@ export const getOffers= async (req,res)=>{
 
 export const createOffers = async (req, res) => {
     try {
-        const newOffer = new offer(req.body); // expects JSON body with offer details
-        await newOffer.save();
-        res.status(201).json({ message: "Offer created", offer: newOffer });
+        let offers = req.body;
+
+        if (!offers) {
+            return res.status(400).json({ message: "Request body is missing" });
+        }
+
+        // Wrap single object into an array
+        if (!Array.isArray(offers)) {
+            offers = [offers];
+        }
+
+        const createdOffers = await offer.insertMany(offers);
+        res.status(201).json({ message: "Offers created", offers: createdOffers });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Server Error" });
     }
-}
+};
+
