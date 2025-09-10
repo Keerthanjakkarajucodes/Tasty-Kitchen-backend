@@ -5,7 +5,7 @@ import { getOffers,createOffers } from "../controllers/offerController.js";
 const router = express.Router();
 
 // Example offer route
-router.get("/offers",getOffers)
-router.post("/create-offers",createOffers)
+router.get("/",getOffers)
+router.post("/",createOffers)
 
 export default router;
