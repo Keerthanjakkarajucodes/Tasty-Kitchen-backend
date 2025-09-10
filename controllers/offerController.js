@@ -1,14 +1,21 @@
 import offer from "../models/Offer.js";
 
-export const getOffers= async (req,res)=>{
-    try{
-        const offers=await offer.find();
-        res.status(200).json({offers});
-    }catch(error){
+export const getOffers = async (req, res) => {
+    try {
+        const offers = await offer.find();
+
+        const formattedOffers = offers.map((offer, index) => ({
+            image_url: offer.imageUrl,  // Use camelCase field from DB
+            id: index + 1               // Or use your own logic for id
+        }));
+
+        res.status(200).json({ offers: formattedOffers });
+    } catch (error) {
         console.log(error);
-        res.status(500).json({message:"Server Error"})
+        res.status(500).json({ message: "Server Error" });
     }
-}
+};
+
 
 
 export const createOffers = async (req, res) => {
