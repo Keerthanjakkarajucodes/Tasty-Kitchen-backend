@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import cors from "cors";
-import { authRoutes, cartRoutes, recipeRoutes, offerRoutes,productRoutes } from './routes/index.js';
+import { authRoutes, cartRoutes, recipeRoutes, offerRoutes,restaurantRoutes } from './routes/index.js';
 
 dotenv.config();
 connectDB()
@@ -14,7 +14,7 @@ app.use(express.json())
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/offers", offerRoutes);
 app.use("/api/recipes", recipeRoutes);
 
