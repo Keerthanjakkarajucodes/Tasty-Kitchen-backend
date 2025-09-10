@@ -4,17 +4,13 @@ export const getOffers = async (req, res) => {
     try {
         const offers = await offer.find();
 
-        const formattedOffers = offers.map((offer, index) => ({
-            image_url: offer.imageUrl,  // Use camelCase field from DB
-            id: index + 1               // Or use your own logic for id
-        }));
-
-        res.status(200).json({ offers: formattedOffers });
+        res.status(200).json({ offers });  // No transformation needed
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Server Error" });
     }
 };
+
 
 
 
