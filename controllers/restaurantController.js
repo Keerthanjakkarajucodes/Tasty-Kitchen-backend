@@ -1,77 +1,46 @@
 import Restaurant from "../models/Restaurant.js";
 import FoodItem from "../models/FoodItem.js";
 
-// ---------------------- GET ALL RESTAURANTS ----------------------
-export const getAllRestaurants = async (req, res) => {
+// Create multiple restaurants
+import Restaurant from "../models/Restaurant.js";
+
+// Create multiple restaurants
+export const createRestaurants = async (req, res) => {
   try {
-    const { offset = 0, limit = 9 } = req.query;
+    const { restaurants } = req.body;  // Extract the array from the key
+    if (!Array.isArray(restaurants) || restaurants.length === 0) {
+      return res.status(400).json({ message: "Invalid input data" });
+    }
 
-    const total = await Restaurant.countDocuments();
+    const inserted = await Restaurant.insertMany(restaurants);
 
-    const restaurants = await Restaurant.find()
-      .skip(Number(offset))
-      .limit(Number(limit))
-      .lean(); // convert Mongoose documents to plain JS objects
-
-    // Format to remove _id, __v
-    const formatted = restaurants.map(r => ({
-      id: r.id,
-      name: r.name,
-      cost_for_two: r.cost_for_two,
-      cuisine: r.cuisine,
-      group_by_time: r.group_by_time,
-      has_online_delivery: r.has_online_delivery,
-      has_table_booking: r.has_table_booking,
-      image_url: r.image_url,
-      location: r.location,
-      menu_type: r.menu_type,
-      opens_at: r.opens_at,
-      user_rating: r.user_rating,
-    }));
-
-    res.json({ restaurants: formatted, total });
+    res.status(201).json({
+      message: "Restaurants added successfully",
+      data: inserted
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch restaurants" });
+    res.status(500).json({
+      message: "Error adding restaurants",
+      error: err.message
+    });
   }
 };
 
-// ---------------------- CREATE RESTAURANT(S) ----------------------
-export const createRestaurant = async (req, res) => {
+
+// Get all restaurants
+export const getRestaurants = async (req, res) => {
   try {
-    let data = req.body;
-
-    if (!Array.isArray(data)) data = [data];
-
-    const savedRestaurants = await Restaurant.insertMany(data);
-
-    const formatted = savedRestaurants.map(r => ({
-      id: r.id,
-      name: r.name,
-      cost_for_two: r.cost_for_two,
-      cuisine: r.cuisine,
-      group_by_time: r.group_by_time,
-      has_online_delivery: r.has_online_delivery,
-      has_table_booking: r.has_table_booking,
-      image_url: r.image_url,
-      location: r.location,
-      menu_type: r.menu_type,
-      opens_at: r.opens_at,
-      user_rating: r.user_rating,
-    }));
-
-    res.status(201).json({ restaurants: formatted, total: formatted.length });
+    const restaurants = await Restaurant.find();
+    res.status(200).json(restaurants);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to create restaurant(s)" });
+    res.status(500).json({ message: "Error fetching restaurants", error: err.message });
   }
 };
 
-// ---------------------- GET RESTAURANT BY ID ----------------------
+// Get restaurant by ID
 export const getRestaurantById = async (req, res) => {
   try {
     const { id } = req.params;
-
     const restaurant = await Restaurant.findOne({ id }).lean();
     if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
 
@@ -96,7 +65,7 @@ export const getRestaurantById = async (req, res) => {
   }
 };
 
-// ---------------------- CREATE FOOD ITEM(S) ----------------------
+// Create food item(s) for a restaurant
 export const createFoodItem = async (req, res) => {
   try {
     const { id } = req.params; // restaurant string id
