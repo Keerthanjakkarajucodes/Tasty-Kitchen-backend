@@ -8,10 +8,10 @@ import {
 
 const router = express.Router();
 
-router.get("/restaurants-list", getAllRestaurants);
-router.post("/restaurants-list", createRestaurant);
+router.get("/items", getAllRestaurants);
+router.post("/items", createRestaurant);
 
-router.get("/restaurants-list/:id", getRestaurantById);
-router.post("/restaurants-list/:id/fooditems", createFoodItem);
+router.get("/:id/fooditems", getRestaurantById);
+router.post("/:id/fooditems", createFoodItem);
 
 export default router;
