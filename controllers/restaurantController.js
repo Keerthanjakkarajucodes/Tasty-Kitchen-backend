@@ -1,87 +1,75 @@
 import Restaurant from "../models/Restaurant.js";
 import FoodItem from "../models/FoodItem.js";
 
-
-// Get all restaurants
+// Get all restaurants with pagination
 export const getAllRestaurants = async (req, res) => {
   try {
     const { offset = 0, limit = 9 } = req.query;
 
     const total = await Restaurant.countDocuments();
+
     const restaurants = await Restaurant.find()
       .skip(Number(offset))
-      .limit(Number(limit));
+      .limit(Number(limit))
+      .select("-_id -__v") // remove _id and __v
+      .lean(); // convert to plain JS objects
 
     res.json({ restaurants, total });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to fetch restaurants" });
   }
 };
 
-
-// Create one or many restaurants
+// Create one or multiple restaurants
 export const createRestaurant = async (req, res) => {
   try {
     let data = req.body;
 
-    // If not an array, make it an array
-    if (!Array.isArray(data)) {
-      data = [data];
-    }
+    // If single object, convert to array
+    if (!Array.isArray(data)) data = [data];
 
     const savedRestaurants = await Restaurant.insertMany(data);
-    res.status(201).json(savedRestaurants);
+
+    // Format response exactly like frontend wants
+    const formatted = savedRestaurants.map(r => {
+      const { id, name, cost_for_two, cuisine, group_by_time, has_online_delivery, has_table_booking, image_url, location, menu_type, opens_at, user_rating } = r;
+      return {
+        id,
+        name,
+        cost_for_two,
+        cuisine,
+        group_by_time,
+        has_online_delivery,
+        has_table_booking,
+        image_url,
+        location,
+        menu_type,
+        opens_at,
+        user_rating,
+      };
+    });
+
+    res.status(201).json({ restaurants: formatted, total: formatted.length });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to create restaurant(s)" });
   }
 };
 
-
-
-// Get all food items for a restaurant
+// Get restaurant by id with food items
 export const getRestaurantById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const restaurant = await Restaurant.findOne({ id });
-    if (!restaurant) return res.status(404).json({ error: "Not found" });
+    const restaurant = await Restaurant.findOne({ id }).select("-_id -__v").lean();
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
 
-    const foodItems = await FoodItem.find({ restaurant_id: id });
+    const food_items = await FoodItem.find({ restaurant_id: id }).select("-_id -__v").lean();
 
-    res.json({
-      id: restaurant.id,
-      name: restaurant.name,
-      cuisine: restaurant.cuisine,
-      location: restaurant.location,
-      cost_for_two: restaurant.cost_for_two,
-      rating: restaurant.user_rating?.rating,
-      reviews_count: restaurant.user_rating?.total_reviews,
-      image_url: restaurant.image_url,
-      food_items: foodItems,
-    });
+    res.json({ ...restaurant, food_items });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to fetch restaurant details" });
   }
 };
-
-
-// Create one or many food items under a restaurant
-export const createFoodItem = async (req, res) => {
-  try {
-    const { id } = req.params; // restaurant string id
-    let data = req.body;
-
-    if (!Array.isArray(data)) data = [data];
-
-    const foodItemsData = data.map(item => ({
-      ...item,
-      restaurant_id: id,
-    }));
-
-    const savedItems = await FoodItem.insertMany(foodItemsData);
-    res.status(201).json(savedItems);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to create food item(s)" });
-  }
-};
-
