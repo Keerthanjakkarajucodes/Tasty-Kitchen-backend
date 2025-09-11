@@ -1,12 +1,19 @@
 import express from "express";
-import { addRestaurants, getRestaurants } from "../controllers/restaurantController.js";
+import {
+  getAllRestaurants,
+  createRestaurant,
+  getRestaurantFoodItems,
+  createFoodItem,
+} from "../controllers/restaurantController.js";
 
 const router = express.Router();
 
-// POST multiple restaurants
-router.post("/", addRestaurants);
+// Restaurants
+router.get("/items", getAllRestaurants);
+router.post("/items", createRestaurant);
 
-// GET all restaurants
-router.get("/", getRestaurants);
+// Food Items
+router.get("/:id/fooditems", getRestaurantFoodItems);
+router.post("/:id/fooditems", createFoodItem);
 
 export default router;

@@ -1,29 +1,67 @@
 import Restaurant from "../models/Restaurant.js";
+import FoodItem from "../models/FoodItem.js";
 
-// ✅ Add multiple restaurants at once
-export const addRestaurants = async (req, res) => {
+
+// Get all restaurants
+export const getAllRestaurants = async (req, res) => {
   try {
-    const restaurants = req.body; // expects array of restaurants
-    if (!Array.isArray(restaurants)) {
-      return res.status(400).json({ message: "Request body must be an array" });
-    }
-
-    const savedRestaurants = await Restaurant.insertMany(restaurants);
-    res.status(201).json({
-      message: "Restaurants added successfully",
-      data:savedRestaurants,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Error adding restaurants", error });
+    const restaurants = await Restaurant.find();
+    res.json(restaurants);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch restaurants" });
   }
 };
 
-// ✅ Get all restaurants
-export const getRestaurants = async (req, res) => {
+// Create one or many restaurants
+export const createRestaurant = async (req, res) => {
   try {
-    const restaurants = await Restaurant.find();
-    res.status(200).json(restaurants);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching restaurants", error });
+    let data = req.body;
+
+    // If not an array, make it an array
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
+
+    const savedRestaurants = await Restaurant.insertMany(data);
+    res.status(201).json(savedRestaurants);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create restaurant(s)" });
+  }
+};
+
+
+
+// Get all food items for a restaurant
+export const getRestaurantFoodItems = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const foodItems = await FoodItem.find({ restaurant_id: id });
+    res.json(foodItems);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch food items" });
+  }
+};
+
+// Create one or many food items under a restaurant
+export const createFoodItem = async (req, res) => {
+  try {
+    const { id } = req.params; // restaurant ID
+    let data = req.body;
+
+    // If not an array, make it an array
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
+
+    // Attach restaurant_id to each item
+    const foodItemsData = data.map(item => ({
+      ...item,
+      restaurant_id: id,
+    }));
+
+    const savedItems = await FoodItem.insertMany(foodItemsData);
+    res.status(201).json(savedItems);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create food item(s)" });
   }
 };
