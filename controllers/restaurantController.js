@@ -28,12 +28,35 @@ export const createRestaurants = async (req, res) => {
 // Get all restaurants
 export const getRestaurants = async (req, res) => {
   try {
-    const restaurants = await Restaurant.find();
-    res.status(200).json(restaurants);
+    const { offset = 0, limit = 9, search = '', sort_by_rating } = req.query;
+
+    const query = search
+      ? { name: { $regex: search, $options: 'i' } }
+      : {};
+
+    let restaurantsQuery = Restaurant.find(query);
+
+    if (sort_by_rating) {
+      restaurantsQuery = restaurantsQuery.sort({ 'user_rating.rating': sort_by_rating === 'Highest' ? -1 : 1 });
+    }
+
+    // Apply pagination
+    restaurantsQuery = restaurantsQuery.skip(parseInt(offset)).limit(parseInt(limit));
+
+    const restaurants = await restaurantsQuery.lean();
+
+    const total = await Restaurant.countDocuments(query);
+
+    res.status(200).json({
+      restaurants,
+      total,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Error fetching restaurants", error: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching restaurants', error: err.message });
   }
 };
+
 
 // Get restaurant by ID
 export const getRestaurantById = async (req, res) => {
