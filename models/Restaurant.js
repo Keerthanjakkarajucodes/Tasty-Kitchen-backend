@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose"
 
 const userRatingSchema = new mongoose.Schema({
   rating: { type: Number, required: true },
@@ -23,4 +23,6 @@ const restaurantSchema = new mongoose.Schema({
   user_rating: { type: userRatingSchema, required: true }
 });
 
-module.exports = mongoose.model('Restaurant', restaurantSchema);
+const Restaurant=mongoose.model('Restaurant', restaurantSchema);
+
+export default Restaurant;

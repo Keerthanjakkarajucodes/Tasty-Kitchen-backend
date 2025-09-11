@@ -1,15 +1,15 @@
 import express from "express";
 import {
-  getAllRestaurants,
-  createRestaurant,
+  createRestaurants ,
+  getRestaurants,
   getRestaurantById,
   createFoodItem,
 } from "../controllers/restaurantController.js";
 
 const router = express.Router();
 
-router.get("/items", getAllRestaurants);
-router.post("/items", createRestaurant);
+router.get("/items", getRestaurants);
+router.post("/items", createRestaurants);
 
 router.get("/:id/fooditems", getRestaurantById);
 router.post("/:id/fooditems", createFoodItem);

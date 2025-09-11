@@ -1,8 +1,6 @@
 import Restaurant from "../models/Restaurant.js";
 import FoodItem from "../models/FoodItem.js";
 
-// Create multiple restaurants
-import Restaurant from "../models/Restaurant.js";
 
 // Create multiple restaurants
 export const createRestaurants = async (req, res) => {
