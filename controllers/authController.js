@@ -3,9 +3,10 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js"; // assuming you already have User model
 
 // Register
+// Register
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;  // <-- use username
 
     // check if user exists
     const existingUser = await User.findOne({ email });
@@ -18,7 +19,7 @@ export const register = async (req, res) => {
 
     // create user
     const newUser = await User.create({
-      name,
+      username,   // <-- store username
       email,
       password: hashedPassword,
     });
@@ -28,6 +29,7 @@ export const register = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 // Login
 export const login = async (req, res) => {
