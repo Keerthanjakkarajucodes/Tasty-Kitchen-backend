@@ -4,7 +4,6 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoutes.js"
 import { authRoutes, cartRoutes, recipeRoutes, offerRoutes,restaurantRoutes } from './routes/index.js';
 
 dotenv.config();
