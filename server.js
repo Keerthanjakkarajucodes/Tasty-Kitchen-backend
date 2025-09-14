@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "./config/passport.js";
+import session from "express-session"; // <-- import this
 import { authRoutes, cartRoutes, recipeRoutes, offerRoutes,restaurantRoutes } from './routes/index.js';
 
 dotenv.config();
@@ -15,6 +16,12 @@ app.use(cors())
 app.use(express.json())
 app.use(cookieParser());
 app.use(morgan("dev"));
+app.use(session({
+  secret: process.env.SESSION_SECRET || "defaultSecret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // secure: true only if using HTTPS
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/api/auth", authRoutes);
