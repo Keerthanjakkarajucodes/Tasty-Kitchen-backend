@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "./config/passport.js";
 import session from "express-session"; // <-- import this
+import MongoStore from "connect-mongo";
 import { authRoutes, cartRoutes, recipeRoutes, offerRoutes,restaurantRoutes } from './routes/index.js';
 
 dotenv.config();
@@ -20,7 +21,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "defaultSecret",
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // secure: true only if using HTTPS
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: "sessions" // you can name it whatever you like
+  }),
+  cookie: { secure: false } // change to true if using HTTPS
 }));
 app.use(passport.initialize());
 app.use(passport.session());
