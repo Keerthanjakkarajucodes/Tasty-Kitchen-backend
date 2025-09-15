@@ -85,11 +85,12 @@ export const login = async (req, res) => {
     );
 
     // Send token in httpOnly cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
+   // in your login controller
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true, // Use `secure: true` for HTTPS
+  sameSite: "none", // Use "none" for cross-origin sites
+});
 
     res.json({ message: "Login successful" });
   } catch (err) {

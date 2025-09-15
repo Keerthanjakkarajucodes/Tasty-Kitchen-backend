@@ -25,7 +25,7 @@ app.use(session({
     mongoUrl: process.env.MONGO_URI,
     collectionName: "sessions" // you can name it whatever you like
   }),
-  cookie: { secure: false } // change to true if using HTTPS
+  cookie: { secure: true } // change to true if using HTTPS
 }));
 app.use(passport.initialize());
 app.use(passport.session());
