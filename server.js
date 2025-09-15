@@ -13,7 +13,11 @@ dotenv.config();
 connectDB()
 
 const app=express()
-app.use(cors())
+const corsOptions = {
+  origin: "https://tasty-kitchen-swiggy-clone.vercel.app",
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json())
 app.use(cookieParser());
 app.use(morgan("dev"));
