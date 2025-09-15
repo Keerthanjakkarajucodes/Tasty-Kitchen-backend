@@ -10,24 +10,24 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://tasty-kitchen-backend-1.onrender.com/api/auth/google/callback", // your backend callback
+      callbackURL: "https://tasty-kitchen-backend-1.onrender.com/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Check if user exists
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          // Create new user if not exists
           user = await User.create({
             username: profile.displayName,
             email: profile.emails[0].value,
             googleId: profile.id,
+            password: null,  // ✅ Explicitly set to null
           });
         }
 
         return done(null, user);
       } catch (err) {
+        console.error("Google OAuth Error:", err.message);  // ✅ Log the error
         return done(err, null);
       }
     }
@@ -39,8 +39,13 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id);
-  done(null, user);
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    console.error("Deserialize User Error:", err.message);
+    done(err, null);
+  }
 });
 
 export default passport;

@@ -1,6 +1,3 @@
-// models/User.js
-import mongoose from "mongoose";
-
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -17,16 +14,13 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       minlength: 6,
+      default: null,  // ✅ Optional now
     },
     googleId: {
-      type: String, // only used for Google OAuth logins
+      type: String,
       default: null,
     },
   },
   { timestamps: true }
 );
-
-const User = mongoose.model("User", userSchema);
-export default User;
