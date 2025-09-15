@@ -99,8 +99,12 @@ res.cookie("token", token, {
 };
 
 
-
 export const logout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,        // Must match how cookie was originally set
+    sameSite: "none",
+  });
   res.json({ message: "Logged out successfully" });
 };
+
