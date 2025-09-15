@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -15,7 +17,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       minlength: 6,
-      default: null,  // ✅ Optional now
+      default: null,   // Make it not required
     },
     googleId: {
       type: String,
@@ -24,3 +26,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+const User = mongoose.model("User", userSchema);
+
+export default User;   // ✅ Important: export default
