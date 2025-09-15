@@ -18,14 +18,17 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(session({
-  secret: process.env.SESSION_SECRET || "defaultSecret",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: "sessions" // you can name it whatever you like
-  }),
-  cookie: { secure: true } // change to true if using HTTPS
+  secret: process.env.SESSION_SECRET || "defaultSecret",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: "sessions" 
+  }),
+  cookie: { 
+    secure: true,
+    sameSite: "none" 
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
