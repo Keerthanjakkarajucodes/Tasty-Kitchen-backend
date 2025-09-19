@@ -106,5 +106,18 @@ export const logout = (req, res) => {
     sameSite: "none",
   });
   res.json({ message: "Logged out successfully" });
+}; 
+
+export const validateToken = (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.json({ valid: false });
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ valid: true });
+  } catch (err) {
+    res.json({ valid: false });
+  }
 };
 
