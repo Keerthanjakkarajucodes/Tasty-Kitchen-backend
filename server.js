@@ -4,38 +4,18 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import passport from "./config/passport.js";
-import session from "express-session"; // <-- import this
-import MongoStore from "connect-mongo";
 import { authRoutes, cartRoutes, recipeRoutes, offerRoutes,restaurantRoutes } from './routes/index.js';
 
 dotenv.config();
 connectDB()
 
 const app=express()
-const corsOptions = {
-  origin: "https://tasty-kitchen-swiggy-clone.vercel.app",
-  credentials: true,
-};
-app.use(cors(corsOptions));
+
 app.use(express.json())
 app.use(cookieParser());
 app.use(morgan("dev"));
-app.use(session({
-  secret: process.env.SESSION_SECRET || "defaultSecret",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: "sessions" 
-  }),
-  cookie: { 
-    secure: true,
-    sameSite: "none" 
-  }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+
+
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/restaurants", restaurantRoutes);
