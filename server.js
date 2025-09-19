@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 
 app.use(cors({
   origin: [
-    "http://localhost:3000",                       // local dev
+    "http://localhost:3000",                       // local frontend
     "https://tasty-kitchen-swiggy-clone.vercel.app" // deployed frontend
   ],
   credentials: true, // ✅ allow cookies
