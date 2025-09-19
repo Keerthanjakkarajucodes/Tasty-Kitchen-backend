@@ -1,14 +1,10 @@
 import express from "express";
-import passport from "passport";
 import { register, login, logout ,validateToken} from "../controllers/authController.js";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+
 
 router.get("/validate-token", (req, res) => {
   const token = req.cookies.token;
@@ -22,25 +18,7 @@ router.get("/validate-token", (req, res) => {
   }
 });
 
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    const token = jwt.sign(
-      { id: req.user._id, email: req.user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
-
-    res.redirect("https://tasty-kitchen-swiggy-clone.vercel.app/");
-  }
-);
 
 router.post("/register", register);
 router.post("/login", login);
