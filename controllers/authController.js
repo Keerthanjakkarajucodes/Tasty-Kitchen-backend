@@ -102,4 +102,18 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logged out successfully" });
+}; 
+
+export const validateToken = (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.json({ valid: false });
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ valid: true });
+  } catch (err) {
+    res.json({ valid: false });
+  }
 };
+
