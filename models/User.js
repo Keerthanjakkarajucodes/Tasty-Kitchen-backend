@@ -16,12 +16,12 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      minlength: 6,
-      default: null,   // Make it not required
+      required: true,
     },
-    googleId: {
+    mobile: {
       type: String,
-      default: null,
+      required: true,
+      unique: true,
     },
   },
   { timestamps: true }
@@ -29,4 +29,4 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model("User", userSchema);
 
-export default User;   // ✅ Important: export default
+export default User;
