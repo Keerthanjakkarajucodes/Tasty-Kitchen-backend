@@ -88,8 +88,8 @@ export const login = async (req, res) => {
    // in your login controller
 res.cookie("token", token, {
   httpOnly: true,
-  secure: true, // Use `secure: true` for HTTPS
-  sameSite: "none", // Use "none" for cross-origin sites
+  secure: process.env.NODE_ENV === "production",  // only true on Render
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 });
 
     res.json({ message: "Login successful" });
