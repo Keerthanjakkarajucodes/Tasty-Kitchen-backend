@@ -16,6 +16,14 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 
+app.use(cors({
+  origin: [
+    "http://localhost:3000",                       // local dev
+    "https://tasty-kitchen-swiggy-clone.vercel.app" // deployed frontend
+  ],
+  credentials: true, // ✅ allow cookies
+}));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/restaurants", restaurantRoutes);
