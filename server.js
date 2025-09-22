@@ -15,6 +15,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors())
 
 
 
@@ -22,7 +23,7 @@ app.use(morgan("dev"));
 app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/offers",offerRoutes)
-app.use("/api/restaurant",restaurantRoutes)
+app.use("/api/restaurants",restaurantRoutes)
 
 // Root
 app.get("/", (req, res) => {
