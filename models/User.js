@@ -1,11 +1,11 @@
+// models/User.js
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    name: {            // ✅ changed from username to name
       type: String,
       required: true,
-      unique: true,
       trim: true,
     },
     email: {
@@ -28,5 +28,4 @@ const userSchema = new mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
-
 export default User;
