@@ -4,7 +4,7 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import cors from "cors";
 
-import {  recipeRoutes, userRoutes ,restaurantRoutes, offerRoutes} from "./routes/index.js";
+import {  recipeRoutes, userRoutes ,restaurantRoutes, offerRoutes,cartRoutes} from "./routes/index.js";
 
 
 dotenv.config();
@@ -24,6 +24,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/offers",offerRoutes)
 app.use("/api/restaurants",restaurantRoutes)
+app.use("/api/cart", cartRoutes);
 
 // Root
 app.get("/", (req, res) => {

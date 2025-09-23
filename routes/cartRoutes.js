@@ -1,9 +1,12 @@
 import express from "express";
+import { getCart, addToCart, removeFromCart, clearCart } from "../controllers/cartController.js";
+import { protect } from "../middleware/authMiddleware.js"; // your auth middleware
+
 const router = express.Router();
 
-// Example cart route
-router.get("/", (req, res) => {
-  res.json({ message: "Cart endpoint works" });
-});
+router.get("/", protect, getCart);
+router.post("/", protect, addToCart);
+router.delete("/:productId", protect, removeFromCart);
+router.delete("/", protect, clearCart);
 
 export default router;
