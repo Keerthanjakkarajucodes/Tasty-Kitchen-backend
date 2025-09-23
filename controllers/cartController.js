@@ -4,12 +4,12 @@ import Cart from "../models/Cart.js";
 export const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user._id });
-    if (!cart) return res.json({ items: [] });
-    res.json(cart);
+    res.json({ items: cart ? cart.items : [] }); // <-- always sends { items: [...] }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ADD item or increment quantity
 export const addToCart = async (req, res) => {
